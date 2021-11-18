@@ -70,7 +70,6 @@ server.listen(() => {
 server.on('connectionClosed', ({ connectionId, stats , username}) => {
     console.log(requestinfo);
     updateUsers(requestinfo, stats);
-    console.log(users[0]);
     console.log(`Connection ${connectionId} closed`);
     console.dir(stats);
 });
