@@ -1,23 +1,10 @@
 const ProxyChain = require('proxy-chain');
 const readArr = require('./poolFormatter');
-
+const User = require('./database');
 
 let proxies = readArr('pool.txt');
 
 let requestinfo = {}
-let users = [
-    {
-        username: 'giuliobmb',
-        password: 'a',
-        bandwith: 1000
-    },
-    {
-        username: 'gerino',
-        password: 'b',
-        bandwith: 1000
-    }
-]
-
 
 const server = new ProxyChain.Server({
     // Port where the server will listen. By default 8000.
@@ -40,9 +27,10 @@ const server = new ProxyChain.Server({
     // * isHttp       - If true, this is a HTTP request, otherwise it's a HTTP CONNECT tunnel for SSL
     //                  or other protocols
     // * connectionId - Unique ID of the HTTP connection. It can be used to obtain traffic statistics.
-    prepareRequestFunction: ({ request, username, password, hostname, port, isHttp, connectionId }) => {
+    prepareRequestFunction: async ({ request, username, password, hostname, port, isHttp, connectionId }) => {
         requestinfo = {username, password, connectionId};
-        if(checkUser(username, password)){
+        let result = await User.findOne({username, password}).exec();
+        if(result != null){
             let upstreamProxyUrl = proxies[Math.floor(Math.random() * ((proxies.length-1) - 0) + 0)];
             console.log("Using proxy: " + upstreamProxyUrl);
             auth = false;
@@ -50,14 +38,14 @@ const server = new ProxyChain.Server({
                 requestAuthentication: auth,
                 upstreamProxyUrl,
             };
-        }else{
+        }
+        else{
             auth = true;
             return {
                 requestAuthentication: auth,
                 failMsg: 'Bad username or password, please try again.',
             };
         }
-
     },
 });
  
@@ -66,7 +54,7 @@ server.listen(() => {
 });
  
 // Emitted when HTTP connection is closed
-server.on('connectionClosed', ({ connectionId, stats , username}) => {
+server.on('connectionClosed', ({ connectionId, stats}) => {
     console.log(requestinfo);
     updateUsers(requestinfo, stats);
     console.log(`Connection ${connectionId} closed`);
@@ -80,17 +68,8 @@ server.on('requestFailed', ({ request, error }) => {
 
 });
 
-let checkUser = (username, password) => {
-    for(i=0;i<users.length;i++){
-        if(username === users[i].username && password === users[i].password && users[i].bandwith > 50)
-            return true;
-    }
-    return false;
-}
-
-let updateUsers = (reqInfo, stats) => {
-    for(i=0;i<users.length;i++){
-        if(users[i].username === reqInfo.username && users[i].password === reqInfo.password)
-            users[i].bandwith -= stats.srcTxBytes;
-    }
+let updateUsers = async (reqInfo, stats) => {
+    let result = await User.findOne({username: reqInfo.username, password: reqInfo.password}).exec();
+    let nbandwith = result.bandwith-stats.srcTxBytes;
+    await User.findOneAndUpdate({username: reqInfo.username, password: reqInfo.password}, {bandwith: nbandwith}).exec();
 }
