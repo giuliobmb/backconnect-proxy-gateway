@@ -42,9 +42,8 @@ const server = new ProxyChain.Server({
     // * connectionId - Unique ID of the HTTP connection. It can be used to obtain traffic statistics.
     prepareRequestFunction: ({ request, username, password, hostname, port, isHttp, connectionId }) => {
         requestinfo = {username, password, connectionId};
-        console.log(checkUser(username, password) + username + password);
         if(checkUser(username, password)){
-            let upstreamProxyUrl = proxies[Math.floor(Math.random() * (proxies.length - 0) + 0)];
+            let upstreamProxyUrl = proxies[Math.floor(Math.random() * ((proxies.length-1) - 0) + 0)];
             console.log("Using proxy: " + upstreamProxyUrl);
             auth = false;
             return {
