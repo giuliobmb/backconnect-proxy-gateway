@@ -3,8 +3,8 @@ const readArr = require('./poolFormatter');
 const User = require('./database');
 const api = require('./api');
 
-let pool1 = readArr('pool1.txt');
-let pool2 = readArr('pool2.txt');
+let pool1 = readArr('./pool.txt');
+let pool2 = readArr('./pool2.txt');
 
 let requestinfo = {}
 
@@ -25,8 +25,8 @@ const server = new ProxyChain.Server({
         }
        
         requestinfo = {username, password, connectionId};
-        console.log(requestinfo)
         let result = await User.findOne({username, password}).exec();
+        console.log(pool);
         if(result != null && result.bandwith > 500){
             switch(pool){
                 case 'pool1':

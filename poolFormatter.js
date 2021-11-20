@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 let readArr = (fileName) => {
-    let data = fs.readFileSync("pool.txt");
+    let data = fs.readFileSync(fileName);
     let arr = data.toString().replace(/\r\n/g,'\n').split('\n');
     for(i=0;i<arr.length;i++){
         let s = arr[i].split(':');
