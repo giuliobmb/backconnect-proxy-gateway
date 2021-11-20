@@ -1,0 +1,26 @@
+{
+  "name": "backconnect-proxy-gateway",
+  "version": "1.0.0",
+  "description": "backconnect working on an api, with users database and bandwith managing",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.13",
+    "proxy-chain": "^1.0.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/giuliobmb/backconnect-proxy-gateway.git"
+  },
+  "author": "giuliobmb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/giuliobmb/backconnect-proxy-gateway/issues"
+  },
+  "homepage": "https://github.com/giuliobmb/backconnect-proxy-gateway#readme"
+}

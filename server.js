@@ -3,7 +3,8 @@ const readArr = require('./poolFormatter');
 const User = require('./database');
 const api = require('./api');
 
-let proxies = readArr('pool.txt');
+let pool1 = readArr('pool1.txt');
+let pool2 = readArr('pool2.txt');
 
 let requestinfo = {}
 
@@ -11,10 +12,32 @@ const server = new ProxyChain.Server({
     port: 8000,
     verbose: true,
     prepareRequestFunction: async ({ request, username, password, hostname, port, isHttp, connectionId }) => {
+        let upstreamProxyUrl;
+        let pool;
+        if(username != null){
+            let s = username.split('-');
+            if(s.length > 1){
+                username = s[0];
+                pool = s[1];
+            }else{
+                username = s[0];
+            }
+        }
+       
         requestinfo = {username, password, connectionId};
+        console.log(requestinfo)
         let result = await User.findOne({username, password}).exec();
         if(result != null && result.bandwith > 500){
-            let upstreamProxyUrl = proxies[Math.floor(Math.random() * ((proxies.length-1) - 0) + 0)];
+            switch(pool){
+                case 'pool1':
+                    upstreamProxyUrl = pool1[Math.floor(Math.random() * ((pool1.length-1) - 0) + 0)];
+                    break;
+                case 'pool2':
+                    upstreamProxyUrl = pool2[Math.floor(Math.random() * ((pool2.length-1) - 0) + 0)];
+                    break;
+                default:
+                    upstreamProxyUrl = pool1[Math.floor(Math.random() * ((pool1.length-1) - 0) + 0)];
+            }
             console.log("Using proxy: " + upstreamProxyUrl);
             auth = false;
             return {
