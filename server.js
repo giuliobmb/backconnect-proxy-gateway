@@ -2,6 +2,7 @@ const ProxyChain = require('proxy-chain');
 const readArr = require('./poolFormatter');
 const User = require('./database');
 const api = require('./api');
+const { request } = require('express');
 
 let pool1 = readArr('./pool.txt');
 let pool2 = readArr('./pool2.txt');
