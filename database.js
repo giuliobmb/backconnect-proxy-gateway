@@ -3,7 +3,7 @@ const { Int32, Decimal128 } = require('bson');
 const mongoose = require('mongoose');
 const { long } = require('webidl-conversions');
 
-const dbUrl = 'mongodb+srv://scuolabar:OpOO3aYVJW7DZSaD@cluster0.gtebm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const dbUrl = '';
 
 
 mongoose.connect(dbUrl, {useNewUrlParser: true, useUnifiedTopology: true})
